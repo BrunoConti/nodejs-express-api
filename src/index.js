@@ -1,10 +1,10 @@
 const express = require('express');
 
-const routes = require('./routes')
+const routesV1 = require('./routes/v1');
 
 app = express();
 
-routes(app)
+routesV1(app);
 
 app.listen(4000, () => {
   console.log('Server running on 4000');
