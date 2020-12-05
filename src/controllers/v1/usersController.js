@@ -1,5 +1,12 @@
-const createUser = (req, res) => {
-  res.send({ status: 'OK', message: 'user created' });
+const bcrypt = require('bcrypt');
+
+const createUser = async (req, res) => {
+  try {
+    await bcrypt.hash(req.body.password, 15);
+    res.send({ status: 'OK', message: 'user created' });
+  } catch (error) {
+    res.status(500).send({ status: 'OK', message: error.message });
+  }
 };
 
 const deleteUser = (req, res) => {
