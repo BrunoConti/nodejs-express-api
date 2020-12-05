@@ -1,11 +1,21 @@
 const bcrypt = require('bcrypt');
+const Users = require('../../models/users');
 
 const createUser = async (req, res) => {
   try {
-    await bcrypt.hash(req.body.password, 15);
-    res.send({ status: 'OK', message: 'user created' });
+    const { username, email, password } = req.body;
+    const hash = await bcrypt.hash(password, 15);
+
+    const user = await Users.create({
+      username,
+      email,
+      password: hash,
+    });
+
+    res.send({ status: 'OK', data: user });
   } catch (error) {
-    res.status(500).send({ status: 'OK', message: error.message });
+    console.log('Create user error:', err);
+    res.status(500).send({ status: 'Error', message: error.message });
   }
 };
 
@@ -17,8 +27,21 @@ const getUsers = (req, res) => {
   res.send({ status: 'OK', message: 'show users' });
 };
 
-const updateUser = (req, res) => {
-  res.send({ status: 'OK', message: 'user updated' });
+const updateUser = async (req, res) => {
+  try {
+    const { username, email, role } = req.body;
+
+    await Users.findByIdAndUpdate(req.params.userId, {
+      username,
+      email,
+      role,
+    });
+
+    res.send({ status: 'OK', message: 'user updated' });
+  } catch (err) {
+    console.log('Update user error:', err);
+    res.send({ status: 'OK', message: err.message });
+  }
 };
 
 module.exports = { createUser, deleteUser, getUsers, updateUser };
