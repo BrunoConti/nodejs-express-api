@@ -9,8 +9,6 @@ const routesV1 = require('./routes/v1');
 
 app = express();
 
-console.log('env', process.env.MONGO_DB);
-
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
