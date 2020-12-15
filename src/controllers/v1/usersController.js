@@ -1,6 +1,25 @@
 const bcrypt = require('bcrypt');
 const Users = require('../../models/users');
 
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await Users.findOne({ email });
+
+    if (user) {
+      const isOK = await bcrypt.compare(password, user.password);
+      isOK
+        ? res.send({ status: 'OK', data: {} })
+        : res.status(401).send({ status: 'INVALID PASSWORD', message: '' });
+    } else {
+      res.status(401).send({ status: 'USER NOT FOUND', message: '' });
+    }
+  } catch (err) {
+    res.status(500).send({ status: 'Error', message: err.message });
+  }
+};
+
 const createUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -44,4 +63,4 @@ const updateUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser, deleteUser, getUsers, updateUser };
+module.exports = { createUser, deleteUser, getUsers, updateUser, login };
